@@ -3,13 +3,11 @@ import { celebrate, Joi } from 'celebrate'
 
 import GroupsController from './controller/GroupsController'
 
-// index, show, create, update, delete
-
 const routes = express.Router()
 
 const groupsController = new GroupsController()
 
-// Groups
+// Create
 routes.post(
     '/groups', 
     celebrate({
@@ -36,8 +34,21 @@ routes.post(
     groupsController.create
 )
 
-routes.get('/groups', groupsController.index)
-routes.get('/groups/:id', groupsController.show)
+// Index
+routes.get('/groups', celebrate({
+    query: Joi.object().keys({
+        uf: Joi.number().required(),
+        city: Joi.number().required(),
+        day: Joi.string().required()
+    })
+}), groupsController.index)
+
+// Show
+routes.get('/groups/:id', celebrate({
+    params: Joi.object().keys({
+        id: Joi.number().required()
+    })
+}), groupsController.show)
 
 export default routes
 
